@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pygsp import graphs, filters, plotting, utils
 import pygsp
-
+"""
 G = graphs.Bunny()
 tolerance = 0.00001
 
@@ -102,7 +102,7 @@ fig, ax = plt.subplots(figsize=(10, 5))
 g.plot(ax=ax)
 _ = ax.set_title('Filter bank of mexican hat wavelets')
 
-
+"""
 import numpy as np
 from pygsp import graphs, reduction
 
@@ -133,8 +133,9 @@ ca, pe = reduction.pyramid_analysis(Gs, f, h_filters=g, method='exact')
 ca2, pe2 = reduction.pyramid_analysis(Gs, f2, h_filters=g, method='exact')
 
 #f_interpolated = reduction.interpolate(G, Gs[1], keep_inds=ca[1])
-
-f_pred, _ = reduction._pyramid_single_interpolation(Gs[0], ca[1], pe[1], keep_inds=pe[0], h_filter=g, method='exact')
+f_interpolated = reduction.interpolate(Gs[4], ca[5], Gs[5].mr['idx'])
+f_interpolated_final = f_interpolated + pe[4]
+#f_pred, _ = reduction._pyramid_single_interpolation(Gs[0], ca[1], pe[1], keep_inds=pe[0], h_filter=g, method='exact')
 
 f_pred, _ = reduction.pyramid_synthesis(Gs, ca[levels], pe, method='exact')
 f_pred2, _ = reduction.pyramid_synthesis(Gs, ca2[levels], pe2, method='exact')
