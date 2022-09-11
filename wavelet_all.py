@@ -82,9 +82,25 @@ s2 = g.synthesize(s2)
 import math
 import numpy as np
 G = graphs.Logo()
-my_filter = filters.Filter(G, lambda x: x*np.exp(-x))
+my_filter = filters.Filter(G, lambda x: 0.124*x*np.exp(-0.124*x))
 #my_filter = filters.Filter(G, lambda x: x / (1. + x))
 #my_filter = filters.Filter(G, lambda x: 5./(5 + x))
+
+lpfactor=20
+Nf = 6
+lmin = G.lmax / lpfactor
+scales = utils.compute_log_scales(lmin, G.lmax, Nf-1)
+norm = np.sqrt(scales[-1])
+
+def band_pass(x):
+    return x * np.exp(-x)
+        
+def low_pass(x):
+    return np.exp(-x**4)
+
+my_filter = filters.Filter(G, lambda x: norm * band_pass(scales[-1] * x))
+low_pass_filter = filters.Filter(G, lambda x: 1.2 * np.exp(-1) * low_pass(x / 0.4 / lmin))
+
 
 # Signal: Kronecker delta.
 signal = np.zeros(G.N)
@@ -97,7 +113,12 @@ my_filter.plot(plot_eigenvalues=True, ax=ax)
 _ = ax.set_title('Filter frequency response')
 
 
-g = filters.MexicanHat(G, Nf=2)  # Nf = 6 filters in the filter bank.
+fig, ax = plt.subplots()
+low_pass_filter.plot(plot_eigenvalues=True, ax=ax)
+_ = ax.set_title('Filter frequency response')
+
+
+g = filters.MexicanHat(G, Nf=6)  # Nf = 6 filters in the filter bank.
 fig, ax = plt.subplots(figsize=(10, 5))
 g.plot(ax=ax)
 _ = ax.set_title('Filter bank of mexican hat wavelets')
